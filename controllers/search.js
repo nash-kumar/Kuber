@@ -1,10 +1,10 @@
-var searchModule = require('../model/model').userModel;
+var searchModule = require('../model/user.model').UserModel;
 
 exports.search=(req,res)=>{
     var noMatch = " ";
     if(req.query.search) {
         const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-        searchModule.find({firstname: regex}, function(err, allCampgrounds){
+        searchModule.find({firstName: regex}, function(err, allCampgrounds){
            if(err){
                res.send(err); 
            } else {

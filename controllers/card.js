@@ -1,14 +1,14 @@
-var cardModel=require('../model/card').cardModel;
+var cardModel = require('../model/card').cardModel;
 
-exports.card=(req,res)=>{
-    if (req.body.data) {
+exports.card = (req, res) => {
+    if (req.body) {
         let userData = cardModel({
-            cardType: req.body.data.cardType,
-            cardNumber: req.body.data.cardNumber,
-            userId: req.body.data.userId,
-            expDate: req.body.data.expDate,
-            cardUserName: req.body.data.cardUserName,
-            cvvCode: req.body.data.cvvCode
+            cardNumber: req.body.cardNumber,
+            cardType: req.body.cardType,
+            userId: req.body.userId,
+            expDate: req.body.expDate,
+            cardUserName: req.body.cardUserName,
+            // cvvCode: req.body.data.cvvCode
         });
         userData.save((err, result) => {
             if (err) {
@@ -28,16 +28,16 @@ exports.card=(req,res)=>{
     }
 };
 
-exports.Card_Get= (req,res)=>{
+exports.Card_Get = (req, res) => {
     let query = cardModel.find({ userId: req.params.id });
     query.exec((err, result) => {
         if (err) {
             return res.send(err);
         }
-        if(result.length === 0) {
+        if (result.length === 0) {
             return res.status(404).send({ success: false, message: "Users Not Found" });
         } else {
-            res.status(200).send({ success: true, message: "Succesfully fetched user details", result:result });
+            res.status(200).send({ success: true, message: "Succesfully fetched user details", result: result });
         }
     })
 }
