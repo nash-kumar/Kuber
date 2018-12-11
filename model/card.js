@@ -9,11 +9,11 @@ const CardSchema = mongoose.Schema({
     cvvCode:{type:Number, required:false}
 });
 
-module.exports = mongoose.model('users', CardSchema);
+// module.exports = mongoose.model('users', CardSchema);
 
-const users = mongoose.model('card', CardSchema);
+const cards = mongoose.model('card', CardSchema);
 
 module.exports = {
-    cardModel: users,
+    cardModel: cards,
     CardSchema: CardSchema
 }
