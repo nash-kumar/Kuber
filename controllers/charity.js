@@ -6,7 +6,7 @@ const Charity = require('../model/charities');
 exports.charitiesList = ((req, res, next) => {
     var pageOptions = {
         page: Math.ceil(0, req.param('page')),
-        limit: req.query.limit || 30
+        limit: parseInt(req.query.limit) || 30
     }
     Charity.find()
         .skip(pageOptions.page * pageOptions.limit)
@@ -23,9 +23,6 @@ exports.charitiesList = ((req, res, next) => {
                         rating: doc.rating,
                         description: doc.description,
                         charitylogo: doc.charitylogo,
-                        return: {
-                            type: 'GET'
-                        }
                     }
                 })
             }

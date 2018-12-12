@@ -78,20 +78,23 @@ exports.forgot_password = function (req, res, next) {
             });
         },
         function (token, done) {
-            UserModel.findOne({ email: req.body.email }, function (err, user) {
+            UserModel.findOne({ email: req.body.email, type: {$in: ['native']}},   function (err, user) {
                 if (err) {
                     next(err);
                 }
                 else if (!user) {
+                   res.status(400).json({ message: "No account or Not registered with Native account." });
 
-                    res.status(400).json({ message: "No account with that email address exists." });
-                } else {
+                } else if(user) {
+                    
                     user.resetPasswordToken = token;
                     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
                     user.save(function (err) {
                         done(err, token, user);
                     });
+                }else{
+                    res.status(403).json({message:"Not a native user"})
                 }
             });
         },

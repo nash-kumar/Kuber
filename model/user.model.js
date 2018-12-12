@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 const Schema = mongoose.Schema;
 const UserSchema = new Schema({
     type: { type: [String], enum: ["native", "google", "facebook"], required: true },
@@ -13,6 +14,6 @@ const UserSchema = new Schema({
     resetPasswordExpires:{type: Date, default: null},
     recentlyViewedCharity: [{ type: Schema.Types.ObjectId, refer: 'users' }]//refer - collection Name
 });
-
+UserSchema.plugin(mongoosePaginate);
 const UserModel = mongoose.model('users', UserSchema);
 module.exports = { UserModel };
