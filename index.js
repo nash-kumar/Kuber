@@ -2,11 +2,11 @@
 // const app = express();
 require('dotenv').config();
 const app = require('express')(),
-cors = require('cors'),
-morgan = require('morgan'),
-bodyParser = require('body-parser'),
-passport = require('passport'),
-mongoose = require('mongoose');
+  cors = require('cors'),
+  morgan = require('morgan'),
+  bodyParser = require('body-parser'),
+  passport = require('passport'),
+  mongoose = require('mongoose');
 colors = require('colours')
 
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true }, function (err) {
@@ -31,12 +31,12 @@ let user = require('./routes/route');
 let card = require('./routes/card');
 
 app.use('/userDetails', user);
-app.use('/card',card);
+app.use('/card', card);
 app.use('/charities', charityDetails);
 
 app.use('/v1/authenticate', Auth);
 app.use('/v1/user', passport.authenticate('jwt', { session: false }), User);
-app.use('/v1/admin', passport.authenticate('jwt', {session: false}), Admin);
+app.use('/v1/admin', passport.authenticate('jwt', { session: false }), Admin);
 
 app.get('/', (req, res) => { res.send("welcome"); });
 app.listen(port = 3001, () => console.log(`Server is running on port number ${port}`));

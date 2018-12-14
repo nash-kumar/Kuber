@@ -1,6 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const resp = require('../helpers/responseHelpers');
+const express = require('express'),
+    router = express.Router(),
+    resp = require('../helpers/responseHelpers');
 // const AdminCtrl = require('../user/user.controller');
 // const CharityModel = require('../charity/charity.controller');
 module.exports = router;

@@ -7,7 +7,7 @@ function missingBody(res, msg) {
 }
 
 function errorResponse(res, err, status, msg) {
-    res.status(status || 501).json({
+    res.status(501).json({
         statusCode: 2,
         success: false,
         message: msg || 'Server Error, Please Try Again Later',
@@ -56,7 +56,7 @@ function successDeleteResponse(res, data, msg) {
 }
 
 function noRecordsFound(res, msg) {
-    res.status(200).json({
+    res.status(404).json({
         statusCode: 4,
         success: false,
         message: msg || 'Unable to find required information',
@@ -65,7 +65,7 @@ function noRecordsFound(res, msg) {
 }
 
 function alreadyRegistered(res, msg) {
-    res.status(200).json({
+    res.status(409).json({
         statusCode: 5,
         success: true,
         message: msg || 'User Already Registered',
@@ -74,7 +74,7 @@ function alreadyRegistered(res, msg) {
 }
 
 function alreadyRegisteredWithGoogle(res, msg) {
-    res.status(200).json({
+    res.status(409).json({
         statusCode: 6,
         success: true,
         message: msg || 'User Already Registered Using Google',
@@ -83,7 +83,7 @@ function alreadyRegisteredWithGoogle(res, msg) {
 }
 
 function alreadyRegisteredWithFacebook(res, msg) {
-    res.status(200).json({
+    res.status(409).json({
         statusCode: 7,
         success: true,
         message: msg || 'User Already Registered Using Facebook',

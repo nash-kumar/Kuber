@@ -6,7 +6,7 @@ const AdminSchema = new Schema({
     lastName: { type: String, default: null },
     email: { type: String, required: true, unique: true },
     password: { type: String, default: null },
-    userId: { type: String, default: null },
+    userId: { type: [String], default: null },
     profileImage: { type: String, default: null },
     role: { type: String, default: "admin" }
 });
