@@ -2,17 +2,15 @@ var UserModel = require('../model/user.model').UserModel;
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 const async = require('async');
-
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const schedule = require('node-schedule');
 var Email = process.env.email;
 var pass = process.env.password;
 var service = process.env.service;
 var refreshTokens = {}
-
+const error=require('../Error-Messages/controllermessages')
 exports.login = (req, res) => {
     UserModel.findOne({ email: req.body.data.email }, function (err, userInfo) {
         if (err) {
@@ -20,13 +18,11 @@ exports.login = (req, res) => {
         } if (userInfo) {
             if (bcrypt.compareSync(req.body.data.password, userInfo.password)) {
                 const token = jwt.sign({
-                    email: userInfo.email,
                     _id: userInfo._id
                 }, process.env.JWT_KEY, {
                         expiresIn: "1h"
                     });
                 const refreshToken = jwt.sign({
-                    email: userInfo.email,
                     _id: userInfo._id
                 }, process.env.JWT_KEY, {
                         expiresIn: "1h"
@@ -48,9 +44,7 @@ exports.login = (req, res) => {
     });
 }
 exports.token = (req, res) => {
-    // refresh the damn token
     const postData = req.body
-    // if refresh token exists
     if ((postData.refreshToken) && (postData.refreshToken in refreshTokens)) {
         const user = {
             "email": postData.email,
@@ -60,7 +54,6 @@ exports.token = (req, res) => {
         const response = {
             "token": token,
         }
-        // update the token in the list
         refreshTokens[postData.refreshToken].token = token
         res.status(200).json(response);
     } else {
@@ -78,14 +71,14 @@ exports.forgot_password = function (req, res, next) {
             });
         },
         function (token, done) {
-            UserModel.findOne({ email: req.body.email, type: {$in: ['native']}},   function (err, user) {
+            UserModel.findOne({ email: req.body.email },   function (err, user) {
                 if (err) {
                     next(err);
                 }
                 else if (!user) {
-                   res.status(400).json({ message: "No account or Not registered with Native account." });
+                   res.status(400).json({ message:error.message400 });
 
-                } else if(user) {
+                } else {
                     
                     user.resetPasswordToken = token;
                     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
@@ -93,8 +86,6 @@ exports.forgot_password = function (req, res, next) {
                     user.save(function (err) {
                         done(err, token, user);
                     });
-                }else{
-                    res.status(403).json({message:"Not a native user"})
                 }
             });
         },
@@ -124,9 +115,9 @@ exports.forgot_password = function (req, res, next) {
             };
             smtpTransport.sendMail(mailOptions, function (err, result) {
                 if (err) {
-                    res.status(500).json({ message: "Check the given email id" });
+                    res.status(500).json({ message:error.message500 });
                 } else {
-                    res.status(200).json({ message: "Email sent " })
+                    res.status(200).json({ message: error.emailSent })
                 }
             });
         }
@@ -141,7 +132,7 @@ exports.reset_get = (req, res) => {
             user.save(function (err) {
                 done(err, user);
             });
-            return res.json({ success: false, message: "Password reset token is invalid or has expired" });
+            return res.json({ message: error.Token });
         }
     });
 };
@@ -154,14 +145,14 @@ exports.reset_password = (req, res) => {
                     debugger;
                     UserModel.findOne({ resetPasswordToken: req.params.token }, function (err, user1) {
                         if (err) {
-                            res.status(403).json({ message: 'Error while updating user document.' });
+                            res.status(403).json({ message: error.message403 });
                         }
                         user1.resetPasswordToken = undefined;
                         user1.resetPasswordExpires = undefined;
                         user1.save(function (err) {
                             done(err, user1);
                         });
-                        res.status(403).json({ message: 'Password reset token is invalid or has expired.' });
+                        res.status(403).json({ message:error.Token });
                     });
                 } else {
                     user.password = bcrypt.hashSync(req.body.password, saltRounds)
@@ -172,7 +163,7 @@ exports.reset_password = (req, res) => {
                         done(err, user);
                     });
                     user1 = user.email;
-                    res.status(200).json({ message: 'Your password has been updated.' });
+                    res.status(200).json({ message: error.update });
                 }
 
             });
@@ -198,9 +189,9 @@ exports.reset_password = (req, res) => {
             };
             smtpTransport.sendMail(mailOptions, function (err, result) {
                 if (err) {
-                    res.status(403).json({ message: "Kindly check your mail for instructions" })
+                    res.status(500).json({ message: error.message500 })
                 } else {
-                    res.status(200).json({ message: "Email Sent" })
+                    res.status(200).json({ message: error.emailSent })
                 }
             });
         }
