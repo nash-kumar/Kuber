@@ -39,6 +39,14 @@ function findUser(query, callback) {
     });
 }
 
+function findAll(callback){
+    AdminModelHelper.findAll(AdminModel, (err, res)=>{
+        if(err) callback(err, null);
+        else if(res.length > 0) callback(null, res);
+        else callback(null, null);
+    })
+}
+
 function findUserAndUpdate(query, data, callback) {
     AdminModelHelper.update(AdminModel, { query, update: data, options: { new: true, select: "-password" } }, (err, res) => {
         if (err) {
@@ -52,4 +60,4 @@ function findUserAndUpdate(query, data, callback) {
 }
 
 
-module.exports = { signup, login, findUser, findUserAndUpdate }
+module.exports = { signup, login, findUser, findUserAndUpdate, findAll }

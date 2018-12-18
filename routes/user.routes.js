@@ -1,26 +1,58 @@
 const express = require('express'),
     router = express.Router(),
     UserCtrl = require('../controllers/user.controller'),
-    resp = require('../helpers/responseHelpers');
+    resp = require('../helpers/responseHelpers'),
+    multer = require('multer'),
+    storage = multer.diskStorage({
+        destination: function (req, file, callback) {
+            callback(null, './images');
+        },
+        filename: function (req, file, callback) {
+            callback(null, new Date().toISOString() + file.originalname);
+        }
+    }),
+
+    fileFilter = (req, file, cb) => {
+        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') cb(null, true)
+        else cb(null, false)
+    }
+
+uploads = multer({
+    storage, limits: {
+        fileSize: 1024 * 1024 * 5
+    }, fileFilter
+});
 
 module.exports = router;
 
 router.get('/profile', (req, res) => {
-    if (req.user ) resp.successGetResponse(res, req.user, "User Profile Details:");
+    if (req.user) resp.successGetResponse(res, req.user, "User Profile Details:");
     else resp.unauthorized(res, "Unauthorized");
 });
 
-router.patch('/profileUpdate', (req, res) => {
-    if (req.user && req.user.query.role === 'user') {
-        UserCtrl.profileUpdate(req.body.email, req.body, (err, res) => {
+router.post('/profileUpdate/', (req, res) => {
+    if (req.user) {
+        UserCtrl.profileUpdate(req.user.id, req.body, (err, result) => {
             if (err) {
                 if (err && err.name === "ValidationError") resp.errorResponse(res, err, 501, "Required Fields Are Missing");
                 else resp.errorResponse(res, err, 502, `Error While Adding Data`);
             }
-            else if (res) resp.successPostResponse(res, doc, `${role} Registered Succesfully`);
+            else if (result) resp.successPutResponse(res, result, 'Updated Successfullly');
             else resp.noRecordsFound(res, `Unable To Update Data`);
         });
     } else resp.missingBody(res, "Missing Body");
 });
 
-
+router.post('/profileImage', uploads.single('profileImage'), (req, res) => {
+    console.log(req.file);
+    if (req.user) {
+        UserCtrl.profileImageUpload(req.user.id, req.file.path, (err, result) => {
+            if (err) {
+                if (err && err.name === "ValidationError") resp.errorResponse(res, err, 501, "Required Fields Are Missing");
+                else resp.errorResponse(res, err, 502, `Error While Adding Data`);
+            }
+            else if (result) resp.successPutResponse(res, result, 'Updated Successfullly');
+            else resp.noRecordsFound(res, `Unable To Update Data`);
+        })
+    } else resp.missingBody(res, "Missing Body");
+})

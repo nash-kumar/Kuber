@@ -50,6 +50,7 @@ function findUser(query, callback) {
     });
 }
 
+
 function findUserAndUpdate(query, data, callback) {
     UserModelHelper.update(UserModel, { query, update: data, options: { new: true, select: "-password" } }, (err, res) => {
         if (err) {

@@ -6,8 +6,8 @@ const app = require('express')(),
   morgan = require('morgan'),
   bodyParser = require('body-parser'),
   passport = require('passport'),
-  mongoose = require('mongoose');
-colors = require('colours')
+  mongoose = require('mongoose'),
+  colors = require('colours');
 
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true }, function (err) {
   if (err) console.log('Error While connecting to DB:'.red, err);
@@ -20,6 +20,7 @@ app.use(morgan('combined'));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(passport.initialize());
 app.use(passport.session());
+// app.use(app.express.static('images'));
 require('./config/passport')(passport);
 
 const Auth = require('./routes/authentication.routes');

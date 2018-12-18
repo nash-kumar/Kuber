@@ -8,6 +8,8 @@ const AdminSchema = new Schema({
     password: { type: String, default: null },
     userId: { type: [String], default: null },
     profileImage: { type: String, default: null },
+    resetPasswordToken:{type: String, default: null},
+    resetPasswordExpires:{type: Date, default: null},
     role: { type: String, default: "admin" }
 });
 
