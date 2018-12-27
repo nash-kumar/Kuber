@@ -29,9 +29,10 @@ const charityDetails = require('./routes/charity');
 
 let user = require('./routes/route');
 let card = require('./routes/card');
-
+let gift =require('./routes/pastgift')
 app.use('/userDetails', user);
 app.use('/card',card);
+app.use('/gift',gift);
 app.use('/charities', charityDetails);
 
 app.use('/v1/authenticate', Auth);

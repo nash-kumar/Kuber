@@ -2,8 +2,8 @@ var mongoose=require('mongoose');
 
 const bankSchema = mongoose.Schema({
     bankName:String,
-    routingNumber:Number,
-    accountNumber:Number,
+    routingNumber:String,
+    accountNumber:String,
     accountHolderName:String,
     userId:String
 });

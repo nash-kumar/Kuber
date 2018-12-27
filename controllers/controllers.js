@@ -9,7 +9,7 @@ require('dotenv').config();
 var Email = process.env.email;
 var pass = process.env.password;
 var service = process.env.service;
-var refreshTokens = {}
+var refreshTokens = {};
 const error=require('../Error-Messages/controllermessages')
 exports.login = (req, res) => {
     UserModel.findOne({ email: req.body.data.email }, function (err, userInfo) {
@@ -142,7 +142,6 @@ exports.reset_password = (req, res) => {
         function (done) {
             UserModel.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function (err, user) {
                 if (!user) {
-                    debugger;
                     UserModel.findOne({ resetPasswordToken: req.params.token }, function (err, user1) {
                         if (err) {
                             res.status(403).json({ message: error.message403 });
@@ -153,7 +152,7 @@ exports.reset_password = (req, res) => {
                             done(err, user1);
                         });
                         res.status(403).json({ message:error.Token });
-                    });
+                    })
                 } else {
                     user.password = bcrypt.hashSync(req.body.password, saltRounds)
                     user.resetPasswordToken = undefined;

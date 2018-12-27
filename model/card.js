@@ -2,7 +2,7 @@ var mongoose=require('mongoose');
 
 const CardSchema = mongoose.Schema({
     cardType:String,
-    cardNumber:Number,
+    cardNumber:String,
     userId:String,
     expDate:String,
     cardUserName:String,
