@@ -8,7 +8,8 @@ const AdminSchema = new Schema({
     password: { type: String, default: null },
     userId: { type: String, default: null },
     profileImage: { type: String, default: null },
-    role: { type: String, default: "admin" }
+    role: { type: String, default: "admin" } ,
+    help:{ type:String }
 });
 
 const AdminModel = mongoose.model('admins', AdminSchema);

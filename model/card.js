@@ -6,6 +6,7 @@ const CardSchema = mongoose.Schema({
     userId:String,
     expDate:String,
     cardUserName:String,
+    default:Boolean,
     cvvCode:{type:Number, required:false}
 });
 const cards = mongoose.model('card', CardSchema);

@@ -2,9 +2,54 @@ const bcrypt = require('bcrypt');
 const rounds = 10;
 const atob = require('atob');
 const SECRET = process.env.SECRET;
+const crypto = require('crypto');
 let b64ToString;
 let creds = [];
 const jwt = require('jsonwebtoken');
+
+function encrypt(data, key) {
+    let ciphar = crypto.createCipheriv("aes-128-ecb", key, "");
+    ciphar.setAutoPadding(false);
+    data = padRightToMod(data, 32, "");
+    ciphar.on("readable", () => {
+        let data = ciphar.read();
+        if (data) {
+            encrypt += data.toString("hex");
+        }
+    });
+    let encrypted = ciphar.update(data, "utf8", "hex");
+    encrypted += ciphar.final("hex");
+    return encrypted;
+    function padRightToMod(text, mod, pad) {
+        if (mod < 0) {
+            return text;
+        }
+        text = text || "";
+        pad = pad || " ";
+        let len = text.length;
+        let r = text;
+        for (let i = len; i % mod > 0; i++) {
+            r += pad;
+        }
+        return r;
+    }
+
+}
+
+function decrypt(data ,key) {
+    // let key = new Buffer.from(hexKey, "hex");
+    let decipher = crypto.createDecipheriv("aes-128-ecb", key, "");
+    decipher.setAutoPadding(false);
+    decipher.on("readable", () => {
+        let data = decipher.read();
+        if (data) {
+            decrypt += data.toString("utf8");
+        }
+    });
+   let plainText = decipher.update(data, "hex", "utf8");
+    decipher.final();
+    return plainText.trim();
+}
 
 function validateMobileNo(number) {
     if (number && (number.toString()).length > 6 && (number.toString()).length < 11) return true;
@@ -48,4 +93,4 @@ function generateJWTToken(id, callback) {
     callback(null, token);
 }
 
-module.exports = { validateMobileNo, validateEmail, hashPassword, decodeAuthString, generateJWTToken }
+module.exports = { encrypt, decrypt, validateMobileNo, validateEmail, hashPassword, decodeAuthString, generateJWTToken }

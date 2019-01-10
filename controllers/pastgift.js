@@ -1,7 +1,8 @@
 const giftModel = require('../model/pastgift').giftModel;
-const Cryptr = require('cryptr')
-cryptr = new Cryptr('asdasdjasjdiasjdiasjdias')
 const Error = require('../Error-Messages/message')
+const encrypter = require('../helpers/validators');
+let key = require('../config/keys');
+const keys = key.key;
 
 
 exports.gift = (req, res, next) => {
@@ -10,18 +11,21 @@ exports.gift = (req, res, next) => {
         charityName: req.body.charityName,
         amount: req.body.amount,
         paymentDate: new Date(),
-        userId: req.userId,
+        userId: encrypter.encrypt(req.userId,keys),
     })
-    if (req.body.type === "card") {
+    if (req.body.type == "card") {
         if(req.body.cardNumber == undefined){
            return res.status(500).send({ message:Error.message500});
         } else  { 
-            giftObj.cardNumber = cryptr.encrypt(req.body.cardNumber)
+            giftObj.cardNumber = encrypter.encrypt(req.body.cardNumber, keys)
             giftObj.cardType = req.body.cardType } 
     }
     else {
-        giftObj.accountNumber = cryptr.encrypt(req.body.accountNumber)
-        giftObj.bankType = req.body.bankType
+        if(req.body.accountNumber == undefined){
+            return res.status(500).send({ message:Error.message500});
+         } else {
+        giftObj.accountNumber = encrypter.encrypt(req.body.accountNumber,keys)
+        giftObj.bankType = req.body.bankType }
     }
     let cardData = giftModel(giftObj);
     cardData.save((err, result) => {
@@ -46,15 +50,14 @@ exports.gift = (req, res, next) => {
 
 
 exports.Get_gift = (req, res) => {
-    let query = giftModel.find({ userId: req.userId });
+    let query = giftModel.find({ userId: encrypter.encrypt(req.userId,keys )});
     query.exec()
         .then(docs => {
             let resData = [];
             docs.map(doc => {
-                
-                if (doc.cardNumber) {
+              if (doc.cardNumber) {
                     resData.push({
-                        cardNumber: cryptr.decrypt(doc.cardNumber),
+                        cardNumber: encrypter.decrypt(doc.cardNumber,keys),
                         charityName: doc.charityName,
                         amount: doc.amount,
                         cardType: doc.cardType,
@@ -62,7 +65,7 @@ exports.Get_gift = (req, res) => {
                     });                    
                     } else if(doc.accountNumber){
                 resData.push({  
-                    accountNumber: cryptr.decrypt(doc.accountNumber),
+                    accountNumber: encrypter.decrypt(doc.accountNumber),
                     bankType:doc.bankType,
                     charityName: doc.charityName,
                     amount: doc.amount,

@@ -1,25 +1,26 @@
 var cardModel = require('../model/card').cardModel;
 var bankModel = require('../model/bank').bankModel;
 const Error=require('../Error-Messages/paymentMessages');
-var Cryptr = require('cryptr')
-cryptr = new Cryptr('asdasdjasjdiasjdiasjdias')
+const encrypter = require('../helpers/validators');
+let key = require('../config/keys');
+const keys = key.key;
 
 
-
-exports.payments = (req, res) => {
+exports.payments = async (req, res) => {
     if (req.body.type == 'card') {
       cardModel.find({userId:req.userId }, function(err,resultData){
-          for(var i = 0; i<= resultData.length ;i ++)
+          for(var i = 0; i <= resultData.length ;i ++)
           if(i < resultData.length){
-                 if(cryptr.decrypt(resultData[i].cardNumber) == req.body.cardNumber){
+                 if(encrypter.decrypt(resultData[i].cardNumber) == req.body.cardNumber){
                     return  res.send({ message :Error.userExists})}}
             else if (req.body) {
             let userData = cardModel({
-                cardNumber: cryptr.encrypt(req.body.cardNumber),
+                cardNumber: req.body.cardNumber,
                 cardType: req.body.cardType,
                 expDate: req.body.expDate,
                 cardUserName: req.body.cardUserName,
-                userId: req.userId
+                default:req.body.default,
+                userId: encrypter.encrypt(req.userId,keys)
             });
             userData.save((err, result) => {
                 if (err) {
@@ -50,6 +51,7 @@ exports.payments = (req, res) => {
                 routingNumber:cryptr.encrypt(req.body.routingNumber),
                 accountNumber: cryptr.encrypt(req.body.accountNumber),
                 accountHolderName: req.body.accountHolderName,
+                default:req.body.default,
                 userId: req.userId
             });
             bankData.save((err, results) => {

@@ -1,15 +1,19 @@
 var mongoose=require('mongoose');
 
 const pledgeSchema = mongoose.Schema({
-    charityId :String,
-    charityName :String,
-    amount: Number,
-    userId : String,
-    paymentDate:Date,
-    frequency:String,
-    pledgeBit: Number
-})
-const pledge = mongoose.model('gift', pledgeSchema);
+        charityId :String,
+        charityName :String,
+        amount: Number,
+        userId : String,
+        paymentDate:Date,
+        frequency:String,
+        cardNumber: String,
+        accountNumber:String,
+        cardType:String,
+        bankType:String,
+        pledgeBit: {type :Boolean , default : null }
+    })
+const pledge = mongoose.model('pledges', pledgeSchema);
 
 module.exports = {
     pledgeModel: pledge,

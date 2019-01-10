@@ -5,6 +5,7 @@ const bankSchema = mongoose.Schema({
     routingNumber:String,
     accountNumber:String,
     accountHolderName:String,
+    default:Boolean,
     userId:String
 });
 const banks = mongoose.model('bank', bankSchema);
