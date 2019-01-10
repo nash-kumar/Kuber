@@ -11,7 +11,7 @@ const UserSchema = new Schema({
     role: { type: String, default: "user"},
     resetPasswordToken:{type: String, default: null},
     resetPasswordExpires:{type: Date, default: null},
-    giftingGoal:{},
+    location:{latitude: Number, longitude: Number},
     recentlyViewedCharity: [{ type: Schema.Types.ObjectId, refer: 'users' }]//refer - collection Name
 });
 

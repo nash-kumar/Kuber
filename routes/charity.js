@@ -30,6 +30,7 @@ var upload = multer({
 
 // Routes
 router.get('/charitiesList', api.charitiesList);
+router.get('/charityNearBy', api.charityLocation);
 router.post('/addCharities', (upload.single('charitylogo')), api.addCharities);
 router.get('/:id', api.charity_id);
 

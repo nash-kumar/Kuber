@@ -32,7 +32,7 @@ function signup(data, role, callback) {
     }
 
     //Social Signup
-    else if (data.type === 'facebook' || data.type==='google' && data.userId) {
+    else if (data.type === 'facebook' || data.type === 'google' && data.userId) {
         Validators.hashPassword(data.userId, function (err, hash) {
             if (err) callback(err, null);
             else if (hash) {

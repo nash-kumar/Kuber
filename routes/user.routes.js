@@ -30,6 +30,21 @@ router.get('/profile', (req, res) => {
     else resp.unauthorized(res, "Unauthorized");
 });
 
+router.get('/userLocation', (req, res) => {
+    if (req.user){
+        UserCtrl.nearByCharities((err, result) => {
+            if (err) {
+                if (err && err.name === "ValidationError") resp.errorResponse(res, err, 501, "Required Fields Are Missing");
+                else resp.errorResponse(res, err, 502, `Error While Adding Data`);
+            }
+            else if (result) resp.successPutResponse(res, result, 'Updated Successfullly');
+            else resp.noRecordsFound(res, `Unable To Update Data`);
+        });
+    } else resp.missingBody(res, "Missing Body");
+})
+
+
+
 router.post('/profileUpdate/', (req, res) => {
     if (req.user) {
         UserCtrl.profileUpdate(req.user.id, req.body, (err, result) => {
