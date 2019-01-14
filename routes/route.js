@@ -5,11 +5,8 @@ module.exports = router;
 
 let Api = require('../controllers/controllers');
 let API_SEARCH = require('../controllers/search');
-<<<<<<< HEAD
 let API_Help = require('../controllers/help');
 let Auth = require('../middleware/check-auth');
-=======
->>>>>>> naresh_code
 
 router.post('/login', Api.login);
 router.post('/forgot', Api.forgot_password);
