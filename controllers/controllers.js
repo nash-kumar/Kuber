@@ -48,7 +48,6 @@ exports.token = (req, res) => {
     if ((postData.refreshToken) && (postData.refreshToken in refreshTokens)) {
         const user = {
             "email": postData.email,
-
         }
         const token = jwt.sign(user, process.env.JWT_KEY, { expiresIn: "1d" })
         const response = {

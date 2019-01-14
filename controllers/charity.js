@@ -62,11 +62,7 @@ exports.addCharities = ((req, res,next) => {
                     charityName: result.charityName,
                     description: result.description,
                     rating: result.rating,
-                    request: {
-                        type: 'POST',
-                        url: "http://localhost:3200/charities/" + result._id
-                        
-                    }
+                    charitylogo : result.charitylogo
                 }
             });
         })
@@ -88,10 +84,7 @@ exports.charity_id = ((req, res, next) => {
         console.log("From database", doc);
         if (doc) {
           res.status(200).json({
-              charity: doc,
-              request: {
-                  type: 'GET by Id',
-              }
+              charity: doc
           });
         } else {
           res
