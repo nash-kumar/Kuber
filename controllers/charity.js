@@ -49,7 +49,7 @@ exports.charitiesList = ((req, res, next) => {
 
 // post api
 exports.addCharities = ((req, res, next) => {
-    // console.log(req.file);
+    console.log(req.file);
     console.log('POST');
     const charity = new Charity({
         _id: new mongoose.Types.ObjectId(),

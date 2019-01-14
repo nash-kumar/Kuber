@@ -48,7 +48,7 @@ exports.login = (req, res) => {
     });
 }
 exports.token = (req, res) => {
-    // refresh the damn token
+    // refresh the token
     const postData = req.body
     // if refresh token exists
     if ((postData.refreshToken) && (postData.refreshToken in refreshTokens)) {
