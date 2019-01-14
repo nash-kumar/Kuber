@@ -7,11 +7,12 @@ const UserSchema = new Schema({
     lastName: { type: String, default: null },
     email: { type: String, required: true, unique: true },
     password: { type: String, default: null },
-    userId: { type: String, default: null },
+    userId: { type: [String], default: null },
     profileImage: { type: String, default: null },
     role: { type: String, default: "user"},
     resetPasswordToken:{type: String, default: null},
     resetPasswordExpires:{type: Date, default: null},
+    location:{latitude: Number, longitude: Number},
     recentlyViewedCharity: [{ type: Schema.Types.ObjectId, refer: 'users' }]//refer - collection Name
 });
 UserSchema.plugin(mongoosePaginate);

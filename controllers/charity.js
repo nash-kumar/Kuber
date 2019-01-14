@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 let path = require('path');
 const Charity = require('../model/charities');
+const UserModel = require('../model/user.model').UserModel;
+const sortByDistance = require('sort-by-distance');
 
 // get  charity api
 exports.charitiesList = ((req, res, next) => {
@@ -23,6 +25,11 @@ exports.charitiesList = ((req, res, next) => {
                         rating: doc.rating,
                         description: doc.description,
                         charitylogo: doc.charitylogo,
+                        latitude: doc.latitude,
+                        longitude: doc.longitude,
+                        return: {
+                            type: 'GET'
+                        }
                     }
                 })
             }
@@ -41,7 +48,7 @@ exports.charitiesList = ((req, res, next) => {
 });
 
 // post api
-exports.addCharities = ((req, res,next) => {
+exports.addCharities = ((req, res, next) => {
     console.log(req.file);
     console.log('POST');
     const charity = new Charity({
@@ -49,6 +56,8 @@ exports.addCharities = ((req, res,next) => {
         charityName: req.body.charityName,
         description: req.body.description,
         rating: req.body.rating,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
         charitylogo: req.file.path
     });
     charity
@@ -62,7 +71,14 @@ exports.addCharities = ((req, res,next) => {
                     charityName: result.charityName,
                     description: result.description,
                     rating: result.rating,
-                    charitylogo : result.charitylogo
+                    charitylogo : result.charitylogo,
+                    latitude: result.latitude,
+                    longitude: result.longitude,
+                    request: {
+                        type: 'POST',
+                        url: "http://localhost:3200/charities/" + result._id
+
+                    }
                 }
             });
         })
@@ -100,3 +116,34 @@ exports.charity_id = ((req, res, next) => {
 
 
 
+exports.charityLocation = ((req, res) => {
+    var pageOptions = {
+        page: Math.ceil(0, req.param('page')),
+        limit: req.query.limit || 30
+    }
+    Charity.find()
+        .skip(pageOptions.page * pageOptions.limit)
+        .limit(pageOptions.limit)
+        .select("latitiude longitude")
+        .exec()
+        .then(docs => {
+            const response = {
+                count: docs.length,
+                charity: docs.map(doc => {
+                    return {
+                        latitude: doc.latitude,
+                        longitude: doc.longitude
+                    }
+                })
+            }
+            res.status(200).json({
+                message: 'Get method success',
+                response
+            });
+        }).catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        })
+})

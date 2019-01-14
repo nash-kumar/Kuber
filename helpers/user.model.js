@@ -1,4 +1,5 @@
 const UserModel = require('../model/user.model').UserModel;
+const CharityModel = require('../model/charities').CharityModel;
 const UserModelHelper = require('../helpers/modelHelper');
 const sortByDistance = require('sort-by-distance');
 
@@ -18,7 +19,7 @@ function signup(data, callback) {
 }
 
 function login(query, callback) {
-    UserModelHelper.find(UserModel, {query}, (err, res) => {
+    UserModelHelper.find(UserModel, { query }, (err, res) => {
         if (err) {
             console.log("User Model Error:", err);
             callback(err, null);
@@ -27,19 +28,27 @@ function login(query, callback) {
         } else callback(null, null);
     });
 }
-function nearby(query, callback) {
-    UserModelHelper.find(UserModel, query, (err, res) => {
+function nearby(callback) {
+    UserModelHelper.find(UserModel, { select: 'location'}, (err, res) => {
         if (err) {
             console.log("User Model Error:", err);
             callback(err, null);
         } else if (res) {
-            callback(null, res[0]);
+            var userLocation = res[0];
         } else callback(null, null);
     });
+    // UserModelHelper.find(CharityModel, {select: 'latitude'}, (err, res) => {
+    //     if (err) {
+    //         console.log("User Model Error:", err);
+    //         callback(err, null);
+    //     } else if (res) {
+    //         callback(null, res);
+    //     } else callback(null, null);
+    // })
 }
 
 function findUser(query, callback) {
-    UserModelHelper.find(UserModel, { query, select: '-password -userId' }, (err, res) => {
+    UserModelHelper.find(UserModel, { query, select: '-password' }, (err, res) => {
         if (err) {
             console.log("User Model Error:", err);
             callback(err, null);
@@ -49,6 +58,7 @@ function findUser(query, callback) {
         } else callback(null, null);
     });
 }
+
 
 function findUserAndUpdate(query, data, callback) {
     UserModelHelper.update(UserModel, { query, update: data, options: { new: true, select: "-password" } }, (err, res) => {
