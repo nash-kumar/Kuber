@@ -48,7 +48,7 @@ function nearby(callback) {
 }
 
 function findUser(query, callback) {
-    UserModelHelper.find(UserModel, { query, select: '-password' }, (err, res) => {
+    UserModelHelper.find(UserModel, { query }, (err, res) => {
         if (err) {
             console.log("User Model Error:", err);
             callback(err, null);

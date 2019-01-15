@@ -1,6 +1,6 @@
 const UserModel = require('../helpers/user.model');
 const AdminModel = require('../helpers/admin.model')
-const Validators = require('../helpers/validators');
+    const Validators = require('../helpers/validators');
 const bcrypt = require('bcrypt');
 
 function signup(data, role, callback) {

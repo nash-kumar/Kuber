@@ -11,27 +11,29 @@ exports.gift = (req, res, next) => {
         charityName: req.body.charityName,
         amount: req.body.amount,
         paymentDate: new Date(),
-        userId: encrypter.encrypt(req.userId,keys),
+        userId: encrypter.encrypt(req.userId, keys),
     })
     if (req.body.type == "card") {
-        if(req.body.cardNumber == undefined){
-           return res.status(500).send({ message:Error.message500});
-        } else  { 
+        if (req.body.cardNumber == undefined) {
+            return res.status(500).send({ message: Error.message500 });
+        } else {
             giftObj.cardNumber = encrypter.encrypt(req.body.cardNumber, keys)
-            giftObj.cardType = req.body.cardType } 
+            giftObj.cardType = req.body.cardType
+        }
     }
     else {
-        if(req.body.accountNumber == undefined){
-            return res.status(500).send({ message:Error.message500});
-         } else {
-        giftObj.accountNumber = encrypter.encrypt(req.body.accountNumber,keys)
-        giftObj.bankType = req.body.bankType }
+        if (req.body.accountNumber == undefined) {
+            return res.status(500).send({ message: Error.message500 });
+        } else {
+            giftObj.accountNumber = encrypter.encrypt(req.body.accountNumber, keys)
+            giftObj.bankType = req.body.bankType
+        }
     }
     let cardData = giftModel(giftObj);
     cardData.save((err, result) => {
         if (err) {
             return res.status(500).send({ message: Error.message500 });
-        } else if(result){
+        } else if (result) {
             const response = {
                 charityId: result.charityId,
                 charityName: result.charityName,
@@ -44,38 +46,38 @@ exports.gift = (req, res, next) => {
             }
 
             return res.status(201).json({ message: Error.message201, response });
-        }else res.status(400).json({ message: Error.Message400 });
+        } else res.status(400).json({ message: Error.Message400 });
     });
 }
 
 
 exports.Get_gift = (req, res) => {
-    let query = giftModel.find({ userId: encrypter.encrypt(req.userId,keys )});
+    let query = giftModel.find({ userId: encrypter.encrypt(req.userId, keys) });
     query.exec()
         .then(docs => {
             let resData = [];
             docs.map(doc => {
-              if (doc.cardNumber) {
+                if (doc.cardNumber) {
                     resData.push({
-                        cardNumber: encrypter.decrypt(doc.cardNumber,keys),
+                        cardNumber: encrypter.decrypt(doc.cardNumber, keys),
                         charityName: doc.charityName,
                         amount: doc.amount,
                         cardType: doc.cardType,
                         paymentDate: doc.paymentDate
-                    });                    
-                    } else if(doc.accountNumber){
-                resData.push({  
-                    accountNumber: encrypter.decrypt(doc.accountNumber),
-                    bankType:doc.bankType,
-                    charityName: doc.charityName,
-                    amount: doc.amount,
-                    cardType: doc.cardType,
-                    paymentDate: doc.paymentDate
-                 }); 
+                    });
+                } else if (doc.accountNumber) {
+                    resData.push({
+                        accountNumber: encrypter.decrypt(doc.accountNumber),
+                        bankType: doc.bankType,
+                        charityName: doc.charityName,
+                        amount: doc.amount,
+                        cardType: doc.cardType,
+                        paymentDate: doc.paymentDate
+                    });
                 }
             });
             return (res.status(200).json({ message: Error.Message200, resData }));
         }).catch(err => {
-          return (res.status(500).json({ message: Error.message500 }));
+            return (res.status(500).json({ message: Error.message500 }));
         })
 }
