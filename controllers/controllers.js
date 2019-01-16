@@ -44,6 +44,7 @@ exports.login = (req, res) => {
     });
 }
 exports.token = (req, res) => {
+    // refresh the token
     const postData = req.body
     if ((postData.refreshToken) && (postData.refreshToken in refreshTokens)) {
         const user = {

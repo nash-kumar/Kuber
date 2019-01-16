@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const resp = require('../helpers/responseHelpers');
 const AuthCtrl = require('../controllers/authentication.controller');
-// const UserModel = require('../user/user.model')
 module.exports = router;
 
 //Registeration API
