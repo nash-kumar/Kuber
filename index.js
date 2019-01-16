@@ -1,7 +1,9 @@
 
 // const app = express();
 require('dotenv').config();
-const app = require('express')(),
+const express = require('express'),
+  app = express();
+  path = require('path')
   cors = require('cors'),
   morgan = require('morgan'),
   bodyParser = require('body-parser'),
@@ -20,7 +22,7 @@ app.use(morgan('combined'));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use(app.express.static('images'));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 require('./config/passport')(passport);
 
 const Auth = require('./routes/authentication.routes');

@@ -33,7 +33,7 @@ router.get('/profile', (req, res) => {
 
 router.get('/userLocation', (req, res) => {
     if (req.user) {
-        UserCtrl.nearByCharities((err, result) => {
+        UserCtrl.nearByCharities(req.user.location, (err, result) => {
             if (err) {
                 if (err && err.name === "ValidationError") resp.errorResponse(res, err, 501, "Required Fields Are Missing");
                 else resp.errorResponse(res, err, 502, `Error While Adding Data`);
