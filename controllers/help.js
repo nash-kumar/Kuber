@@ -11,6 +11,9 @@ var Email = process.env.email;
 var user23 = process.env.user23;
 var pass = process.env.password;
 var service = process.env.service;
+var mailist =[
+    'neha.n@accionlabs.com' ,'vinay.kashyap@accionlabs.com'
+]
 exports.help = (req, res) => {
     async.waterfall([
         function (done) {
@@ -47,10 +50,11 @@ exports.help = (req, res) => {
                 to: Email,
                 from: user1,
                 subject: '[Kuber App]',
+                cc: mailist,
                 text: 'Hi ' + 'Vinay ' +
 
                     Message
-            }; console.log(user1)
+            }; 
             smtpTransport.sendMail(mailOptions, function (err, team) {
                 if (err) {
                     return res.status(500).json({ message: Error.message500 });
