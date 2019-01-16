@@ -13,7 +13,7 @@ exports.charitiesList = ((req, res, next) => {
     Charity.find()
         .skip(pageOptions.page * pageOptions.limit)
         .limit(pageOptions.limit)
-        .select(" charityName description _id rating charitylogo ")
+        .select(" _id charityName description rating charitylogo ")
         .exec()
         .then(docs => {
             const response = {
