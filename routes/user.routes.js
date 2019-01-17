@@ -2,7 +2,7 @@ const express = require('express'),
     router = express.Router(),
     UserCtrl = require('../controllers/user.controller'),
     AuthCtrl = require('../controllers/authentication.controller');
-    resp = require('../helpers/responseHelpers'),
+resp = require('../helpers/responseHelpers'),
     multer = require('multer'),
     storage = multer.diskStorage({
         destination: function (req, file, callback) {
@@ -33,7 +33,7 @@ router.get('/profile', (req, res) => {
 
 router.get('/userLocation', (req, res) => {
     if (req.user) {
-        UserCtrl.nearByCharities(req.user.location, (err, result) => {
+        UserCtrl.nearByCharities({ latitude: req.user.location.latitude, longitude: req.user.location.longitude }, (err, result) => {
             if (err) {
                 if (err && err.name === "ValidationError") resp.errorResponse(res, err, 501, "Required Fields Are Missing");
                 else resp.errorResponse(res, err, 502, `Error While Adding Data`);
