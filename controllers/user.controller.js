@@ -1,8 +1,9 @@
 const UserModel = require('../helpers/user.model');
-const CharityModel = require('../controllers/charity')
+const CharityModel = require('../controllers/charity');
 const bcrypt = require('bcrypt');
 const Validators = require('../helpers/validators');
 const sortByDistance = require('sort-by-distance');
+
 
 
 function profileUpdate(query, data, callback) {
@@ -47,9 +48,11 @@ function nearByCharities(data, callback) {
                 yName: 'latitude',
                 xName: 'longitude'
             }
-        
+
             const value = (sortByDistance(origin, location, opts));
-            callback(null, value);
+
+            var pageValue = Validators.Pagination(value, data.page);
+            callback(null, pageValue);
         } else callback(null, null)
     })
 }

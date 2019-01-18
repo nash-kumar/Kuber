@@ -36,7 +36,7 @@ function encrypt(data, key) {
 
 }
 
-function decrypt(data ,key) {
+function decrypt(data, key) {
     // let key = new Buffer.from(hexKey, "hex");
     let decipher = crypto.createDecipheriv("aes-128-ecb", key, "");
     decipher.setAutoPadding(false);
@@ -46,7 +46,7 @@ function decrypt(data ,key) {
             decrypt += data.toString("utf8");
         }
     });
-   let plainText = decipher.update(data, "hex", "utf8");
+    let plainText = decipher.update(data, "hex", "utf8");
     decipher.final();
     return plainText.trim();
 }
@@ -59,6 +59,15 @@ function validateMobileNo(number) {
 function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
+}
+function Pagination(value, page, per_page) {
+    var page = page || 1,
+        per_page = 5,
+        offset = (page - 1) * per_page,
+        paginatedItems = value.slice(offset).slice(0, per_page),
+        total_pages = Math.ceil(value.length / per_page);
+        if(paginatedItems.length > 0) return paginatedItems;
+        else console.log('Error');
 }
 
 function hashPassword(password, callback) {
@@ -93,4 +102,4 @@ function generateJWTToken(id, callback) {
     callback(null, token);
 }
 
-module.exports = { encrypt, decrypt, validateMobileNo, validateEmail, hashPassword, decodeAuthString, generateJWTToken }
+module.exports = { Pagination, encrypt, decrypt, validateMobileNo, validateEmail, hashPassword, decodeAuthString, generateJWTToken }

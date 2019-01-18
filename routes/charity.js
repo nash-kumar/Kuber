@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 let path = require('path');
-    
+
 const api = require('../controllers/charity'),
     multer = require('multer'),
     storage = multer.diskStorage({
@@ -28,6 +28,8 @@ uploads = multer({
 // Routes
 router.get('/charitiesList', api.charitiesList);
 router.post('/addCharities', (uploads.single('charitylogo')), api.addCharities);
-router.get('/:id', api.charity_id);
+router.get('/getCharityById/:id', api.charity_id);
+router.post('/updateCharity/:id', (uploads.single('charitylogo')), api.editCharity);
+router.delete('/deleted/:id', api.deleteCharity);
 
 module.exports = router;

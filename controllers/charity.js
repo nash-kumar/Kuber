@@ -91,6 +91,16 @@ function addCharities(req, res, next) {
 // call by Id
 function charity_id(req, res, next) {
     const id = req.params.id;
+    const charity = new Charity({
+        _id: new mongoose.Types.ObjectId(),
+        charityName: req.body.charityName,
+        description: req.body.description,
+        rating: req.body.rating,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        charitylogo: req.file.path
+    });
+    charity.save()
     Charity.findById(id)
         .select('charityName rating description charitylogo')
         .exec()
@@ -101,9 +111,7 @@ function charity_id(req, res, next) {
                     charity: doc
                 });
             } else {
-                res
-                    .status(404)
-                    .json({ message: "No valid entry found for provided ID" });
+                res.status(404).json({ message: "No valid entry found for provided ID" });
             }
         })
         .catch(err => {
@@ -112,14 +120,60 @@ function charity_id(req, res, next) {
         });
 };
 
+function deleteCharity(req, res) {
+    if (req.params.id) {
+        Charity.findByIdAndDelete({ _id: req.params.id })
+            .exec()
+            .then(doc => {
+                if (doc) {
+                    res.status(200).json({
+                        'message': 'Deleted Successfully'
+                    });
+                } else {
+                    res.status(404).json({ message: "No valid entry found for provided ID" });
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({ error: err });
+            })
+    } else res.status(500).json({ error: err });
+}
+
+function editCharity(req, res) {
+    const id = req.params.id;
+    const charity = new Charity({
+
+        charityName: req.body.charityName,
+        description: req.body.description,
+        rating: req.body.rating,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        charitylogo: req.file.path
+    });
+    charity
+    if (req.params.id) {
+        Charity.findOneAndUpdate({ _id: id }, charity)
+            .exec()
+            .then(charity => {
+                if (charity) {
+                    res.status(200).json({
+                        charity,
+                        'message': 'Updated Successfully'
+                    });
+                } else {
+                    res.status(404).json({ message: "No valid entry found for provided ID" });
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({ error: err });
+            })
+    } else res.status(500).json({ error: err });
+}
+
 function charityLocation(callback) {
-    // var pageOptions = {
-    //     page: Math.ceil(0, req.param('page')),
-    //     limit: req.query.limit || 30
-    // }
     Charity.find()
-        // .skip(pageOptions.page * pageOptions.limit)
-        // .limit(pageOptions.limit)
         .select()
         .exec()
         .then(docs => {
@@ -141,4 +195,4 @@ function charityLocation(callback) {
         });
 }
 
-module.exports = { charityLocation, charitiesList, addCharities, charity_id };
+module.exports = { charityLocation, charitiesList, addCharities, editCharity, charity_id, deleteCharity };
