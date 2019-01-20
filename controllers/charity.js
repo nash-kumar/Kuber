@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 let path = require('path');
 const Charity = require('../model/charities').CharityModel;
+const helper = require('../helpers/validators');
 // const UserModel = require('../model/user.model').UserModel;
 // const sortByDistance = require('sort-by-distance');
 
@@ -122,28 +123,24 @@ function charity_id(req, res, next) {
 
 function deleteCharity(req, res) {
     if (req.params.id) {
-        Charity.findByIdAndDelete({ _id: req.params.id })
-            .exec()
-            .then(doc => {
-                if (doc) {
-                    res.status(200).json({
-                        'message': 'Deleted Successfully'
-                    });
-                } else {
-                    res.status(404).json({ message: "No valid entry found for provided ID" });
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                res.status(500).json({ error: err });
-            })
+        var _id = req.params.id;
+        Charity.findById(_id, (err, rest) => {
+            if (err) res.status(404).json({ 'message': 'Charity not found' });
+            else if (rest) {
+                helper.deteleFile(rest.charitylogo);
+                Charity.findByIdAndDelete(_id, (err, resh) => {
+                    if (err) res.status(500).json({ error: err });
+                    else if (resh) res.status(200).json({ message: `Successfully Deleted ${resh.charityName} charity` });
+                    else res.status(404).json({ message: 'not found' })
+                })
+            } else res.status(404).json({ message: 'not found' })
+        })
     } else res.status(500).json({ error: err });
 }
 
 function editCharity(req, res) {
     const id = req.params.id;
     const charity = new Charity({
-
         charityName: req.body.charityName,
         description: req.body.description,
         rating: req.body.rating,
@@ -151,11 +148,12 @@ function editCharity(req, res) {
         longitude: req.body.longitude,
         charitylogo: req.file.path
     });
-    charity
+    charity.save()
     if (req.params.id) {
         Charity.findOneAndUpdate({ _id: id }, charity)
+            charity.save()
             .exec()
-            .then(charity => {
+            .then(charityData => {
                 if (charity) {
                     res.status(200).json({
                         charity,

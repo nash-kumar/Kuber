@@ -4,12 +4,18 @@ const bcrypt = require('bcrypt');
 const Validators = require('../helpers/validators');
 const sortByDistance = require('sort-by-distance');
 
-
-
 function profileUpdate(query, data, callback) {
     UserModel.findUserAndUpdate(query, data, (err, res) => {
         if (err) callback(err, null)
         else if (res) callback(null, res)
+        else callback(null, null)
+    })
+}
+
+function imageUpload(req, res, callback) {
+    Validators.uploads(req, res, (err) => {
+        if (err) callback(err, null);
+        else if (req.user) callback(null, res);
         else callback(null, null)
     })
 }
@@ -43,27 +49,18 @@ function nearByCharities(data, callback) {
                 longitude: data.longitude,
                 latitude: data.latitude
             }
-
             const opts = {
                 yName: 'latitude',
                 xName: 'longitude'
             }
-
             const value = (sortByDistance(origin, location, opts));
 
             var pageValue = Validators.Pagination(value, data.page);
-            callback(null, pageValue);
+            callback(null, pageValue);  
         } else callback(null, null)
     })
 }
 
-function profileImageUpload(query, data, callback) {
-    UserModel.findUserAndUpdate(query, { profileImage: data }, (err, res) => {
-        if (err) callback(err, null)
-        else if (res) callback(null, res)
-        else callback(null, null)
-    })
-}
 
 
-module.exports = { profileUpdate, profileImageUpload, nearByCharities, changePassword }
+module.exports = { profileUpdate, nearByCharities, changePassword, imageUpload }

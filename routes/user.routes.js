@@ -3,27 +3,28 @@ const express = require('express'),
     UserCtrl = require('../controllers/user.controller'),
     AuthCtrl = require('../controllers/authentication.controller'),
     resp = require('../helpers/responseHelpers'),
-    multer = require('multer'),
-    storage = multer.diskStorage({
-        destination: function (req, file, callback) {
-            callback(null, './images');
-        },
-        filename: function (req, file, callback) {
-            callback(null, new Date().toISOString() + file.originalname);
-        }
-    }),
+    validators = require('../helpers/validators');
+//     multer = require('multer'),
+//     storage = multer.diskStorage({
+//         destination: function (req, file, callback) {
+//             callback(null, './images');
+//         },
+//         filename: function (req, file, callback) {
+//             callback(null, new Date().toISOString() + file.originalname);
+//         }
+//     }),
 
-    fileFilter = (req, file, cb) => {
-        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') cb(null, true)
-        else cb(true, null);
+//     fileFilter = (req, file, cb) => {
+//         if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') cb(null, true)
+//         else cb(true, null);
 
-    };
+//     };
 
-var uploads = multer({
-    storage, limits: {
-        fileSize: 1024 * 1024 * 5
-    }, fileFilter
-}).single('profileImage');
+// var uploads = multer({
+//     storage, limits: {
+//         fileSize: 1024 * 1024 * 5
+//     }, fileFilter
+// }).single('profileImage');
 
 module.exports = router;
 
@@ -73,11 +74,11 @@ router.post('/changePassword', (req, res) => {
     } else resp.missingBody(res, "Missing Body");
 })
 
-router.post('/profileImage', (req, res) => {
-    uploads(req, res, (err) => {
-        if (err) resp.errorResponse(res, err, 502, 'File too Large/Not an Image');
-        else if (req.user) {
-            UserCtrl.profileImageUpload(req.user.id, req.file.path, (err, result) => {
+router.post('/profileImage',  (req, res) => {
+    UserCtrl.imageUpload(req, res, (err, resu) => {
+        if (err) resp.errorResponse(res, err, 501, "File too Large/Not a Image");
+        else if (resu) {
+            UserCtrl.profileUpdate(req.user.id, { profileImage: req.file.path }, (err, result) => {
                 if (err) {
                     if (err && err.name === "MulterError") resp.errorResponse(res, err, 501, "File too Large");
                     else resp.errorResponse(res, err, 502, `Error While Adding Data`);
@@ -85,6 +86,6 @@ router.post('/profileImage', (req, res) => {
                 else if (result) resp.successPutResponse(res, result, 'Updated Successfullly');
                 else resp.noRecordsFound(res, `Unable To Update Data`);
             })
-        } else resp.missingBody(res, "Missing Body");
+        } else resp.errorResponse(res, err, 501, "File too Large");
     });
 });

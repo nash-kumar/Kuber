@@ -3,6 +3,39 @@ const rounds = 10;
 const atob = require('atob');
 const SECRET = process.env.SECRET;
 const crypto = require('crypto');
+const fs = require('fs');
+
+function deteleFile(data) {
+    fs.unlink(data, (err) => {
+        if (err) {
+            throw(err);
+        };
+    })
+}
+
+//Image Upload
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './images');
+    },
+    filename: function (req, file, callback) {
+        callback(null, new Date().toISOString() + file.originalname);
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') cb(null, true)
+    else cb(true, null);
+
+};
+
+var uploads = multer({
+    storage, limits: {
+        fileSize: 1024 * 1024 * 5
+    }, fileFilter
+}).single('profileImage');
+
 let b64ToString;
 let creds = [];
 const jwt = require('jsonwebtoken');
@@ -33,7 +66,6 @@ function encrypt(data, key) {
         }
         return r;
     }
-
 }
 
 function decrypt(data, key) {
@@ -66,8 +98,8 @@ function Pagination(value, page, per_page) {
         offset = (page - 1) * per_page,
         paginatedItems = value.slice(offset).slice(0, per_page),
         total_pages = Math.ceil(value.length / per_page);
-        if(paginatedItems.length > 0) return paginatedItems;
-        else console.log('Error');
+    if (paginatedItems.length > 0) return paginatedItems;
+    else console.log('Error');
 }
 
 function hashPassword(password, callback) {
@@ -102,4 +134,4 @@ function generateJWTToken(id, callback) {
     callback(null, token);
 }
 
-module.exports = { Pagination, encrypt, decrypt, validateMobileNo, validateEmail, hashPassword, decodeAuthString, generateJWTToken }
+module.exports = { Pagination, encrypt, decrypt, validateMobileNo, validateEmail, hashPassword, decodeAuthString, generateJWTToken, uploads, deteleFile }
