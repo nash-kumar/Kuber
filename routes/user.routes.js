@@ -2,7 +2,8 @@ const express = require('express'),
     router = express.Router(),
     UserCtrl = require('../controllers/user.controller'),
     resp = require('../helpers/responseHelpers'),
-    validators = require('../helpers/validators');
+    AddressCtrl = require('../controllers/address.controller');
+validators = require('../helpers/validators');
 
 module.exports = router;
 
@@ -69,5 +70,15 @@ router.post('/profileImage', (req, res) => {
 
             }
         });
-    }else resp.missingBody("Missing Body");
+    } else resp.missingBody("Missing Body");
 });
+
+router.post('/address', (req, res) => {
+    if (req.user) {
+        AddressCtrl.addAddress(req.user.id, req.body, (err, address) => {
+            if (err && err.name === "ValidationError") resp.errorResponse(res, err, 501, "Required Fields Are Missing");
+            else if (res) resp.successPutResponse(res, address, 'Updated Successfullly');
+            else resp.noRecordsFound(res, 'Unknown Error');
+        })
+    } else resp.noRecordsFound(res, 'User not found');
+})

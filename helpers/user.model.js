@@ -28,24 +28,7 @@ function login(query, callback) {
         } else callback(null, null);
     });
 }
-function nearby(callback) {
-    UserModelHelper.find(UserModel, { select: 'location'}, (err, res) => {
-        if (err) {
-            console.log("User Model Error:", err);
-            callback(err, null);
-        } else if (res) {
-            var userLocation = res[0];
-        } else callback(null, null);
-    });
-    // UserModelHelper.find(CharityModel, {select: 'latitude'}, (err, res) => {
-    //     if (err) {
-    //         console.log("User Model Error:", err);
-    //         callback(err, null);
-    //     } else if (res) {
-    //         callback(null, res);
-    //     } else callback(null, null);
-    // })
-}
+
 
 function findUser(query, callback) {
     UserModelHelper.find(UserModel, { query }, (err, res) => {
@@ -73,4 +56,4 @@ function findUserAndUpdate(query, data, callback) {
 }
 
 
-module.exports = { signup, login, nearby, findUser, findUserAndUpdate }
+module.exports = { signup, login, findUser, findUserAndUpdate }
