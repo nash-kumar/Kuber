@@ -3,8 +3,8 @@
 require('dotenv').config();
 const express = require('express'),
   app = express();
-  path = require('path')
-  cors = require('cors'),
+path = require('path')
+cors = require('cors'),
   morgan = require('morgan'),
   bodyParser = require('body-parser'),
   passport = require('passport'),
@@ -32,10 +32,10 @@ const charityDetails = require('./routes/charity');
 
 let user = require('./routes/route');
 let card = require('./routes/card');
-let gift =require('./routes/pastgift')
-app.use('/userDetails', user);
-app.use('/card',card);
-app.use('/gift',gift);
+let gift = require('./routes/pastgift')
+app.use('/userDetails',passport.authenticate('jwt', { session: false }),user);
+app.use('/card', passport.authenticate('jwt', { session: false }) ,card);
+app.use('/gift', passport.authenticate('jwt', { session: false }), gift);
 app.use('/charities', charityDetails);
 
 app.use('/v1/authenticate', Auth);
