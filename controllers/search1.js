@@ -1,4 +1,4 @@
-var searchModule = require('../model/pastgift').giftModel;
+var searchModule = require('../model/pledeges').pledgeModel;
 var error = require('../Error-Messages/message');
 const encrypter = require('../helpers/validators');
 let key = require('../config/keys');

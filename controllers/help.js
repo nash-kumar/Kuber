@@ -10,13 +10,10 @@ require('dotenv').config();
 var Email = process.env.email;
 var pass = process.env.password;
 var service = process.env.service;
-// var mailist = [
-//     'neha.n@accionlabs.com', 'vinay.kashyap@accionlabs.com'
-// ]
 exports.help = (req, res) => {
     async.waterfall([
         function (done) {
-            UserModel.findOne({ _id: req.userId }, function (err, user) {
+            UserModel.findOne({ _id: req.user.id }, function (err, user) {
                 if (err) {
                     next(err);
                 }
@@ -46,7 +43,7 @@ exports.help = (req, res) => {
 
             var mailOptions = {
                 to: Email,
-                from: user1,
+                from: Email,
                 subject: '[Kuber App]',
                 cc: key.mailList,
                 text: 'Hi\n' +
@@ -73,7 +70,7 @@ exports.get_help = (req, res) => {
                 FAQs: docs.map(doc => {
                     return {
                         helpMessage: doc.helpMessage,
-                        userId: encrypter.decrypt(doc.userId, keys)
+                        userId: encrypter.decrypt(doc.user.id, keys)
                     }
                 })
             }

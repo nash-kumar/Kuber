@@ -3,8 +3,14 @@ let router = express.Router();
 module.exports = router;
 
 let Api_Card = require('../controllers/card');
-let Auth = require('../middleware/check-auth');
 
-router.post('/payments',Auth,Api_Card.payments);
-router.get('/card/',Auth, Api_Card.Card_Get);
-router.get('/bank',Auth,Api_Card.Bank_Get);
+
+router.post('/payments', (req,res)=>{
+if(req.user) Api_Card.payments(req,res);
+});
+router.get('/card/',(req,res)=>{
+if(req.user) Api_Card.Card_Get(req,res)
+});
+router.get('/bank',(req,res)=>{
+ if(req.user) Api_Card.Bank_Get (req,res);
+});
