@@ -1,4 +1,4 @@
-var searchModule = require('../model/pastgift').giftModel;
+var searchModule = require('../model/charities').CharityModel;
 var error = require('../Error-Messages/message');
 const encrypter = require('../helpers/validators');
 let key = require('../config/keys');
@@ -14,19 +14,7 @@ exports.search = ((req, res) => {
         var charName = new RegExp(escapeRegex(req.body.key), 'gi');
         searchFilter.charityName = { $regex: charName };
     }
-    if (req.body.year) {
-        if (!moment(req.body.year, ['YYYY'], true).isValid()) {
-            return res.status(500).send({ message: "Please pass proper search filter" });
-        }
-        let dateFilter = new Date();
-        dateFilter.setFullYear(req.body.year);
-        searchFilter.paymentDate = { $lt: dateFilter };
-    }
-    if(req.body.cardNumber){
-        searchFilter.cardNumber=  encrypter.encrypt(req.body.cardNumber,keys); };
-        if(req.body.accountNumber){
-            searchFilter.accountNumber=  encrypter.encrypt(req.body.accountNumber,keys); };
-    
+   
    
     searchModule.find(searchFilter, function (err, results) {        
         if (err) {
