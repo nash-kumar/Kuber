@@ -4,11 +4,11 @@ const atob = require('atob');
 const SECRET = process.env.SECRET;
 const crypto = require('crypto');
 const fs = require('fs');
-
+// let path = require('path');
 function deteleFile(data) {
     fs.unlink(data, (err) => {
         if (err) {
-            throw(err);
+            throw (err);
         };
     })
 }
@@ -34,7 +34,7 @@ var uploads = multer({
     storage, limits: {
         fileSize: 1024 * 1024 * 5
     }, fileFilter
-}).single('profileImage');
+})
 
 let b64ToString;
 let creds = [];
@@ -134,4 +134,8 @@ function generateJWTToken(id, callback) {
     callback(null, token);
 }
 
-module.exports = { Pagination, encrypt, decrypt, validateMobileNo, validateEmail, hashPassword, decodeAuthString, generateJWTToken, uploads, deteleFile }
+module.exports = {
+    Pagination, encrypt, decrypt, validateMobileNo,
+    validateEmail, hashPassword, decodeAuthString, generateJWTToken,
+    uploads, deteleFile
+}

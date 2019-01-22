@@ -12,14 +12,6 @@ function profileUpdate(query, data, callback) {
     })
 }
 
-function imageUpload(req, res, callback) {
-    Validators.uploads(req, res, (err) => {
-        if (err) callback(err, null);
-        else if (req.user) callback(null, res);
-        else callback(null, null)
-    })
-}
-
 function changePassword(query, data, callback) {
     if (data.currentPassword) {
         bcrypt.compare(data.currentPassword, query.password, (err, same) => {
@@ -62,5 +54,4 @@ function nearByCharities(data, callback) {
 }
 
 
-
-module.exports = { profileUpdate, nearByCharities, changePassword, imageUpload }
+module.exports = { profileUpdate, nearByCharities, changePassword }
