@@ -14,7 +14,7 @@ const UserSchema = new Schema({
     resetPasswordToken: { type: String, default: null },
     resetPasswordExpires: { type: Date, default: null },
     location: { latitude: Number, longitude: Number },
-    address: [{ type: Schema.Types.ObjectId, refer: 'address' }],
+    address: [{ type: Schema.Types.ObjectId, refer: 'addresses' }],
     recentlyViewedCharity: [{ type: Schema.Types.ObjectId, refer: 'users' }]//refer - collection Name
 });
 UserSchema.plugin(mongoosePaginate);
