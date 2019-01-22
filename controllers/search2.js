@@ -10,13 +10,13 @@ exports.search = ((req, res) => {
     var page = req.query.page || 1
     var sort = { firstName: 1 }
     var searchFilter = {}
-    if (req.body.key) {
-        var charName = new RegExp(escapeRegex(req.body.key), 'gi');
+    if (req.body.charityName) {
+        var charName = new RegExp(escapeRegex(req.body.charityName), 'gi');
         searchFilter.charityName = { $regex: charName };
     }
-   
-   
-    searchModule.find(searchFilter, function (err, results) {        
+
+
+    searchModule.find(searchFilter, function (err, results) {
         if (err) {
             res.status(404).send({ message: error.message404 })
         } else if (results.length < 1) {
