@@ -10,9 +10,9 @@ require('dotenv').config();
 var Email = process.env.email;
 var pass = process.env.password;
 var service = process.env.service;
-var mailist =[
-    'neha.n@accionlabs.com' ,'vinay.kashyap@accionlabs.com'
-]
+// var mailist = [
+//     'neha.n@accionlabs.com', 'vinay.kashyap@accionlabs.com'
+// ]
 exports.help = (req, res) => {
     async.waterfall([
         function (done) {
@@ -29,12 +29,11 @@ exports.help = (req, res) => {
                         Message = result.helpMessage
                         done(err, Message)
                     })
-                } user1 = user.email
-                console.log(user1);
+                } user1 = user.firstName; user2 = user.lastName;
+
             })
         },
         function (Message, user, done) {
-            res.json({ success: true });
             var smtpTransport = nodemailer.createTransport({
                 service: service,
                 host: 'smtp.gmail.com',
@@ -49,16 +48,16 @@ exports.help = (req, res) => {
                 to: Email,
                 from: user1,
                 subject: '[Kuber App]',
-                cc: mailist,
-                text: 'Hi ' + 'Vinay ' +
-
-                    Message
-            }; 
+                cc: key.mailList,
+                text: 'Hi\n' +
+                    Message + '\n\n' +
+                    'Thank you \n' + 'Regards \n' + user1 + ' ' + user2
+            };
             smtpTransport.sendMail(mailOptions, function (err, team) {
                 if (err) {
                     return res.status(500).json({ message: Error.message500 });
                 } else {
-                    return res.status(200).json({ message: Error.emailSent })
+                    return res.status(200).json({ message: Error.message200 })
                 }
             });
         }
