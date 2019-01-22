@@ -8,7 +8,6 @@ const nodemailer = require('nodemailer');
 const UserModel = require('../model/user.model').UserModel;
 require('dotenv').config();
 var Email = process.env.email;
-var user23 = process.env.user23;
 var pass = process.env.password;
 var service = process.env.service;
 var mailist =[
