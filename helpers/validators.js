@@ -125,7 +125,6 @@ function generateJWTToken(id, callback) {
     /* let id = new ObjectId(id);
     id = id.toHexString(); */
     const payload = { _id: id };
-    console.log('The Hex Id String:', payload);
     let token = jwt.sign(payload, SECRET, {
         expiresIn: 604800 * 4 //4 week 
     });

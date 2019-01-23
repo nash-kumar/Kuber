@@ -16,7 +16,6 @@ function errorResponse(res, err, status, msg) {
 }
 
 function successPostResponse(res, data, msg) {
-    console.log('The Data is:', data);
     res.status(200).json({
         statusCode: 3,
         success: true,
@@ -26,7 +25,6 @@ function successPostResponse(res, data, msg) {
 }
 
 function successGetResponse(res, data, msg) {
-    console.log('The Data is:', data);
     res.status(200).json({
         statusCode: 3,
         success: true,
@@ -36,7 +34,6 @@ function successGetResponse(res, data, msg) {
 }
 
 function successPutResponse(res, data, msg) {
-    console.log('The Data is:', data);
     res.status(200).json({
         statusCode: 3,
         success: true,
@@ -46,7 +43,6 @@ function successPutResponse(res, data, msg) {
 }
 
 function successDeleteResponse(res, data, msg) {
-    console.log('The Data is:', data);
     res.status(200).json({
         statusCode: 3,
         success: true,

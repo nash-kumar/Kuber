@@ -6,12 +6,12 @@ const sortByDistance = require('sort-by-distance');
 function signup(data, callback) {
     UserModelHelper.addRecord(UserModel, data, (err, res) => {
         if (err) {
-            console.log("User Model Error:", err);
+            
             callback(err, null);
         } else if (res) {
             let resp = JSON.parse(JSON.stringify(res));
             if (delete resp.password) {
-                console.log("User Model Result:", resp);
+                
                 callback(null, resp);
             } else callback(null, null);
         } else callback(null, null);
@@ -36,7 +36,6 @@ function findUser(query, callback) {
             console.log("User Model Error:", err);
             callback(err, null);
         } else if (res.length > 0) {
-            console.log("User Model Result:", res);
             callback(null, res);
         } else callback(null, null);
     });
@@ -49,7 +48,6 @@ function findUserAndUpdate(query, data, callback) {
             console.log("User Model Error:", err);
             callback(err, null);
         } else if (res) {
-            console.log("User Model Result:", res);
             callback(null, res);
         } else callback(null, null);
     });

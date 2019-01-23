@@ -87,7 +87,6 @@ function login(data, role, callback) {
         model.login({ email: data.email }, (err, res) => {
             if (err) callback(err, null);
             else if (res) {
-                console.log('THE RESPONSCE:', res);
                 bcrypt.compare(data.password, res.password, (err, same) => {
                     if (err) callback(err, null);
                     else if (same) {
