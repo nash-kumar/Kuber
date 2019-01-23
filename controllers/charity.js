@@ -128,67 +128,29 @@ function charity_id(req, res, next) {
         });
 };
 
-function deleteCharity(req, res) {
-    if (req.params.id) {
-        var _id = req.params.id;
-        Charity.findById(_id, (err, rest) => {
-            if (err) res.status(404).json({ 'message': 'Charity not found' });
-            else if (rest) {
-                if (rest.charitylog) helper.deteleFile(rest.charitylogo);
-                Charity.findByIdAndDelete(_id, (err, resh) => {
-                    if (err) res.status(500).json({ error: err });
-                    else if (resh) res.status(200).json({ message: `Successfully Deleted ${resh.charityName}charity` });
-                    else res.status(404).json({ message: 'not found' })
-                })
-            } else res.status(404).json({ message: 'not found' })
-        })
-    } else res.status(500).json({ error: err });
-}
-
 function editCharity(req, res) {
-    // const charity = new Charity({
-    //     charityName: req.body.charityName,
-    //     description: req.body.description,
-    //     rating: req.body.rating,
-    //     latitude: req.body.latitude,
-    //     longitude: req.body.longitude,
-    //     charitylogo: req.file.path
-    // });
-    // charity.save()
+    const charity = new Charity({
+        charityName: req.body.charityName,
+        description: req.body.description,
+        rating: req.body.rating,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        charitylogo: req.file.path
+    });
     if (req.params.id) {
         var _id = req.params.id;
         Charity.findById(_id, (err, result) => {
             if (err) res.status(404).json({ 'message': 'Charity not found' });
             else if (result) {
                 if (result.charitylogo) helper.deteleFile(result.charitylogo);
-                Charity.findOneAndUpdate({ _id: result.id }, result, (err, done) => {
-                    if (err) res.status(404).json({ 'message': 'Charity not found' });
-                    else if (done) res.status(200).json({ message: `Successfully Updated ${done.charityName} charity`, done });
-                    else res.status(404).json({ message: 'not found' })
-                })
+                modelHelper.update(Charity, { query: _id, update: charity, options: { new: true } }, (err, added) => {
+                    if (err) res.status(400).json({ message: 'Unable to Add Charity' })
+                    else if (added) res.status(200).json({ message: 'Added Successfuly', added })
+                    else res.status(400).json({ message: 'Unknown Error' })
+                });
             }
-            else res.status(500).json({ message: 'Unknown Error' });
+            else res.status(500).json({ message: 'not found' });
         })
-        // .then(
-        //     helper.deteleFile(res.charitylogo),
-        //     Charity.findOneAndUpdate({ _id: id }, charity),
-        //     charity.save()
-        //         .exec()
-        //         .then(charityData => {
-        //             if (charity) {
-        //                 res.status(200).json({
-        //                     charity,
-        //                     'message': 'Updated Successfully'
-        //                 });
-        //             } else {
-        //                 res.status(404).json({ message: "No valid entry found for provided ID" });
-        //             }
-        //         })
-        //         .catch(err => {
-        //             console.log(err);
-        //             res.status(500).json({ error: err });
-        //         })
-        // )
     } else res.status(500).json({ error: err });
 }
 
@@ -213,6 +175,23 @@ function charityLocation(callback) {
         }).catch(err => {
             callback(err, null)
         });
+}
+
+function deleteCharity(req, res) {
+    if (req.params.id) {
+        var _id = req.params.id;
+        Charity.findById(_id, (err, rest) => {
+            if (err) res.status(404).json({ 'message': 'Charity not found' });
+            else if (rest) {
+                if (rest.charitylog) helper.deteleFile(rest.charitylogo);
+                Charity.findByIdAndDelete(_id, (err, resh) => {
+                    if (err) res.status(500).json({ error: err });
+                    else if (resh) res.status(200).json({ message: `Successfully Deleted ${resh.charityName}charity` });
+                    else res.status(404).json({ message: 'not found' })
+                })
+            } else res.status(404).json({ message: 'not found' })
+        })
+    } else res.status(500).json({ error: err });
 }
 
 module.exports = {

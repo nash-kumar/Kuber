@@ -33,8 +33,8 @@ const charityDetails = require('./routes/charity');
 let user = require('./routes/route');
 let card = require('./routes/card');
 let gift = require('./routes/pastgift')
-app.use('/userDetails',passport.authenticate('jwt', { session: false }),user);
-app.use('/card', passport.authenticate('jwt', { session: false }) ,card);
+app.use('/userDetails', user);
+app.use('/card', passport.authenticate('jwt', { session: false }), card);
 app.use('/gift', passport.authenticate('jwt', { session: false }), gift);
 app.use('/charities', charityDetails);
 
@@ -44,4 +44,5 @@ app.use('/v1/admin', passport.authenticate('jwt', { session: false }), Admin);
 
 app.get('/', (req, res) => { res.send("welcome"); });
 var port = 3001;
-app.listen(process.env.PORT, () => console.log(`Server is running on port number ${port}`));
+process.env.PORT;
+app.listen(port, () => console.log(`Server is running on port number ${port}`));

@@ -2,8 +2,8 @@ const express = require('express'),
     router = express.Router(),
     UserCtrl = require('../controllers/user.controller'),
     resp = require('../helpers/responseHelpers'),
-    // AddressCtrl = require('../controllers/address.controller');
-validators = require('../helpers/validators');
+    AddressCtrl = require('../controllers/address.controller'),
+    validators = require('../helpers/validators');
 
 module.exports = router;
 

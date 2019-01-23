@@ -31,7 +31,7 @@ function login(query, callback) {
 
 
 function findUser(query, callback) {
-    UserModelHelper.find(UserModel, { query }, (err, res) => {
+    UserModelHelper.find(UserModel, { query, populateQuery: { path: "address" } }, (err, res) => {
         if (err) {
             console.log("User Model Error:", err);
             callback(err, null);
