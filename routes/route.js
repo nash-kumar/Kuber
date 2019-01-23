@@ -14,6 +14,7 @@ router.post('/forgot', Api.forgot_password);
 router.get('/reset/:token', Api.reset_get);
 router.post('/reset/:token', Api.reset_password);
 router.post('/token', Api.token);
+
 router.post('/search/', (req, res) => {
    if (req.user) API_SEARCH.search(req, res)
 });
