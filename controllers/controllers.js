@@ -91,7 +91,6 @@ exports.forgot_password = function (req, res, next) {
             });
         },
         function (token, user, done) {
-            res.json({ success: true });
             var smtpTransport = nodemailer.createTransport({
                 service: service,
                 host: 'smtp.gmail.com',
