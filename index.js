@@ -44,5 +44,5 @@ app.use('/v1/admin', passport.authenticate('jwt', { session: false }), Admin);
 
 app.get('/', (req, res) => { res.send("welcome"); });
 var port = 3001;
-process.env.PORT;
-app.listen(port, () => console.log(`Server is running on port number ${port}`));
+// process.env.PORT;
+app.listen(process.env.PORT || port, () => console.log(`Server is running on port number ${port}`));
