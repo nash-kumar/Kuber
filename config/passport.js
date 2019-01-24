@@ -9,7 +9,6 @@ module.exports = function (passportt) {
     opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('jwt');
     opts.secretOrKey = process.env.SECRET;
     passport.use(new JwtStrategy(opts, function (jwtPayload, done) {
-        console.log('User Authenticating:', jwtPayload);
         UserModel.findUser({ _id: jwtPayload._id }, function (err, user) {
             if (err) return done(err, null)
             else if (user && user[0].role === 'user') {

@@ -10,8 +10,8 @@ const charitySchema = mongoose.Schema({
         min: 0,
         max: 5
     },
-    latitude: Number,
-    longitude: Number,
+    latitude: { type: Number, require: true },
+    longitude: { type: Number, require: true },
     charitylogo: { type: String, require: true }
 });
 

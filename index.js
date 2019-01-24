@@ -1,8 +1,10 @@
 
 // const app = express();
 require('dotenv').config();
-const app = require('express')(),
-  cors = require('cors'),
+const express = require('express'),
+  app = express();
+path = require('path')
+cors = require('cors'),
   morgan = require('morgan'),
   bodyParser = require('body-parser'),
   passport = require('passport'),
@@ -20,7 +22,7 @@ app.use(morgan('combined'));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use(app.express.static('images'));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 require('./config/passport')(passport);
 
 const Auth = require('./routes/authentication.routes');
@@ -30,10 +32,10 @@ const charityDetails = require('./routes/charity');
 
 let user = require('./routes/route');
 let card = require('./routes/card');
-let gift =require('./routes/pastgift')
+let gift = require('./routes/pastgift')
 app.use('/userDetails', user);
-app.use('/card',card);
-app.use('/gift',gift);
+app.use('/card', passport.authenticate('jwt', { session: false }), card);
+app.use('/gift', passport.authenticate('jwt', { session: false }), gift);
 app.use('/charities', charityDetails);
 
 app.use('/v1/authenticate', Auth);
@@ -41,4 +43,6 @@ app.use('/v1/user', passport.authenticate('jwt', { session: false }), User);
 app.use('/v1/admin', passport.authenticate('jwt', { session: false }), Admin);
 
 app.get('/', (req, res) => { res.send("welcome"); });
-app.listen(port = 3001, () => console.log(`Server is running on port number ${port}`));
+var port = 3001;
+// process.env.PORT;
+app.listen(process.env.PORT, () => console.log(`Server is running on port number ${port}`));

@@ -8,13 +8,12 @@ const nodemailer = require('nodemailer');
 const UserModel = require('../model/user.model').UserModel;
 require('dotenv').config();
 var Email = process.env.email;
-var user23 = process.env.user23;
 var pass = process.env.password;
 var service = process.env.service;
 exports.help = (req, res) => {
     async.waterfall([
         function (done) {
-            UserModel.findOne({ _id: req.userId }, function (err, user) {
+            UserModel.findOne({ _id: req.user.id }, function (err, user) {
                 if (err) {
                     next(err);
                 }
@@ -27,12 +26,11 @@ exports.help = (req, res) => {
                         Message = result.helpMessage
                         done(err, Message)
                     })
-                } user1 = user.email
-                console.log(user1);
+                } user1 = user.firstName; user2 = user.lastName;
+
             })
         },
         function (Message, user, done) {
-            res.json({ success: true });
             var smtpTransport = nodemailer.createTransport({
                 service: service,
                 host: 'smtp.gmail.com',
@@ -45,17 +43,18 @@ exports.help = (req, res) => {
 
             var mailOptions = {
                 to: Email,
-                from: user1,
+                from: Email,
                 subject: '[Kuber App]',
-                text: 'Hi ' + 'Vinay ' +
-
-                    Message
-            }; console.log(user1)
+                cc: key.mailList,
+                text: 'Hi\n' +
+                    Message + '\n\n' +
+                    'Thank you \n' + 'Regards \n' + user1 + ' ' + user2
+            };
             smtpTransport.sendMail(mailOptions, function (err, team) {
                 if (err) {
                     return res.status(500).json({ message: Error.message500 });
                 } else {
-                    return res.status(200).json({ message: Error.emailSent })
+                    return res.status(200).json({ message: Error.message200 })
                 }
             });
         }
@@ -71,7 +70,7 @@ exports.get_help = (req, res) => {
                 FAQs: docs.map(doc => {
                     return {
                         helpMessage: doc.helpMessage,
-                        userId: encrypter.decrypt(doc.userId, keys)
+                        userId: encrypter.decrypt(doc.user.id, keys)
                     }
                 })
             }

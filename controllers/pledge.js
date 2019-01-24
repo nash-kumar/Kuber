@@ -12,7 +12,7 @@ exports.pledge = (req, res) => {
         paymentDate: new Date(),
         frequency: req.body.frequency,
         pledgeBit: req.body.pledgeBit,
-        userId: encrypter.encrypt(req.userId ,keys)
+        userId: encrypter.encrypt(req.user.id ,keys)
     });
     if (req.body.type === "card") {
         if (req.body.cardNumber == undefined) {

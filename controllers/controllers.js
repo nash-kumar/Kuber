@@ -10,7 +10,8 @@ var Email = process.env.email;
 var pass = process.env.password;
 var service = process.env.service;
 var refreshTokens = {};
-const error=require('../Error-Messages/controllermessages')
+const error = require('../Error-Messages/controllermessages')
+
 exports.login = (req, res) => {
     UserModel.findOne({ email: req.body.data.email }, function (err, userInfo) {
         if (err) {
@@ -71,15 +72,15 @@ exports.forgot_password = function (req, res, next) {
             });
         },
         function (token, done) {
-            UserModel.findOne({ email: req.body.email },   function (err, user) {
+            UserModel.findOne({ email: req.body.email }, function (err, user) {
                 if (err) {
                     next(err);
                 }
                 else if (!user) {
-                   res.status(400).json({ message:error.message400 });
+                    res.status(400).json({ message: error.message400 });
 
                 } else {
-                    
+
                     user.resetPasswordToken = token;
                     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
@@ -90,7 +91,7 @@ exports.forgot_password = function (req, res, next) {
             });
         },
         function (token, user, done) {
-            res.json({ success: true });
+            console.log(Email,pass);
             var smtpTransport = nodemailer.createTransport({
                 service: service,
                 host: 'smtp.gmail.com',
@@ -115,7 +116,7 @@ exports.forgot_password = function (req, res, next) {
             };
             smtpTransport.sendMail(mailOptions, function (err, result) {
                 if (err) {
-                    res.status(500).json({ message:error.message500 });
+                    res.status(500).json({ err });
                 } else {
                     res.status(200).json({ message: error.emailSent })
                 }
@@ -151,7 +152,7 @@ exports.reset_password = (req, res) => {
                         user1.save(function (err) {
                             done(err, user1);
                         });
-                        res.status(403).json({ message:error.Token });
+                        res.status(403).json({ message: error.Token });
                     })
                 } else {
                     user.password = bcrypt.hashSync(req.body.password, saltRounds)

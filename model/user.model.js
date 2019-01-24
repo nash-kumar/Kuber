@@ -8,13 +8,14 @@ const UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, default: null },
     userId: { type: [String], default: null },
-    phoneNumber:{type: Number, default: null},
+    phoneNumber: { type: Number, default: null },
     profileImage: { type: String, default: null },
-    role: { type: String, default: "user"},
-    resetPasswordToken:{type: String, default: null},
-    resetPasswordExpires:{type: Date, default: null},
-    location:{latitude: Number, longitude: Number},
-    recentlyViewedCharity: [{ type: Schema.Types.ObjectId, refer: 'users' }]//refer - collection Name
+    role: { type: String, default: "user" },
+    resetPasswordToken: { type: String, default: null },
+    resetPasswordExpires: { type: Date, default: null },
+    location: { latitude: Number, longitude: Number },
+    address: [{ type: Schema.Types.ObjectId, ref: 'address' }],
+    recentlyViewedCharity: [{ type: Schema.Types.ObjectId, ref: 'users' }]//refer - collection Name
 });
 UserSchema.plugin(mongoosePaginate);
 const UserModel = mongoose.model('users', UserSchema);

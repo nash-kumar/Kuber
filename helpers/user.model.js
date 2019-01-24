@@ -6,12 +6,12 @@ const sortByDistance = require('sort-by-distance');
 function signup(data, callback) {
     UserModelHelper.addRecord(UserModel, data, (err, res) => {
         if (err) {
-            console.log("User Model Error:", err);
+            
             callback(err, null);
         } else if (res) {
             let resp = JSON.parse(JSON.stringify(res));
             if (delete resp.password) {
-                console.log("User Model Result:", resp);
+                
                 callback(null, resp);
             } else callback(null, null);
         } else callback(null, null);
@@ -28,32 +28,14 @@ function login(query, callback) {
         } else callback(null, null);
     });
 }
-function nearby(callback) {
-    UserModelHelper.find(UserModel, { select: 'location'}, (err, res) => {
-        if (err) {
-            console.log("User Model Error:", err);
-            callback(err, null);
-        } else if (res) {
-            var userLocation = res[0];
-        } else callback(null, null);
-    });
-    // UserModelHelper.find(CharityModel, {select: 'latitude'}, (err, res) => {
-    //     if (err) {
-    //         console.log("User Model Error:", err);
-    //         callback(err, null);
-    //     } else if (res) {
-    //         callback(null, res);
-    //     } else callback(null, null);
-    // })
-}
+
 
 function findUser(query, callback) {
-    UserModelHelper.find(UserModel, { query }, (err, res) => {
+    UserModelHelper.find(UserModel, { query, populateQuery: { path: "address" } }, (err, res) => {
         if (err) {
             console.log("User Model Error:", err);
             callback(err, null);
         } else if (res.length > 0) {
-            console.log("User Model Result:", res);
             callback(null, res);
         } else callback(null, null);
     });
@@ -66,11 +48,10 @@ function findUserAndUpdate(query, data, callback) {
             console.log("User Model Error:", err);
             callback(err, null);
         } else if (res) {
-            console.log("User Model Result:", res);
             callback(null, res);
         } else callback(null, null);
     });
 }
 
 
-module.exports = { signup, login, nearby, findUser, findUserAndUpdate }
+module.exports = { signup, login, findUser, findUserAndUpdate }

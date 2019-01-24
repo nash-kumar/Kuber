@@ -3,8 +3,13 @@ let router = express.Router();
 module.exports = router;
 let pledge = require('../controllers/pledge')
 let gift = require('../controllers/pastgift')
-let Auth = require('../middleware/check-auth')
-router.post('/gift', Auth, gift.gift);
-router.get('/gift', Auth, gift.Get_gift);
+router.post('/gift', (req, res) =>{
+    if(req.user) gift.gift(req, res)
+});
+router.get('/gift', (req,res)=>{
+    if(req.user) gift.Get_gift(req,res);
+});
 
-router.post('/pledge',Auth,pledge.pledge);
+router.post('/pledge', (req,res)=>{
+ if(req.user) pledge.pledge(req,res);   
+});

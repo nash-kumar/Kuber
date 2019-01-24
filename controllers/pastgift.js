@@ -5,13 +5,13 @@ let key = require('../config/keys');
 const keys = key.key;
 
 
-exports.gift = (req, res, next) => {
+exports.gift = (req, res) => {
     let giftObj = giftModel({
         charityId: req.body.charityId,
         charityName: req.body.charityName,
         amount: req.body.amount,
         paymentDate: new Date(),
-        userId: encrypter.encrypt(req.userId, keys),
+        userId: encrypter.encrypt(req.user.id, keys),
     })
     if (req.body.type == "card") {
         if (req.body.cardNumber == undefined) {
@@ -52,7 +52,7 @@ exports.gift = (req, res, next) => {
 
 
 exports.Get_gift = (req, res) => {
-    let query = giftModel.find({ userId: encrypter.encrypt(req.userId, keys) });
+    let query = giftModel.find({ userId: encrypter.encrypt(req.user.id, keys) });
     query.exec()
         .then(docs => {
             let resData = [];
@@ -67,7 +67,7 @@ exports.Get_gift = (req, res) => {
                     });
                 } else if (doc.accountNumber) {
                     resData.push({
-                        accountNumber: encrypter.decrypt(doc.accountNumber),
+                        accountNumber: encrypter.decrypt(doc.accountNumber,keys),
                         bankType: doc.bankType,
                         charityName: doc.charityName,
                         amount: doc.amount,
